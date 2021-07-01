@@ -6,8 +6,18 @@
 #from rest_framework.fields import ImageField
 #from course.models import Branch, Group, Student
 
+#from django.db.models import fields
+from django.db.models import fields
 from rest_framework import serializers
 from course.models import *
+
+
+class BranchModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Branch
+        #fields = '__all__'
+        fields = ('id', 'name', 'address', 'photo')
+
 
 class BranchSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -26,6 +36,14 @@ class BranchSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
+class GroupModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+        #fields = ('id', 'name', 'address', 'photo')
+
+
 class GroupSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=True)
@@ -42,6 +60,13 @@ class GroupSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
+class StudentModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = '__all__'
+
+
 class StudentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=True)
@@ -49,7 +74,7 @@ class StudentSerializer(serializers.Serializer):
     address = serializers.CharField(required=False)
     phone_number = serializers.CharField(required=True)
     gender = serializers.CharField(required=True)
-    group = serializers.CharField(required=True)
+    group = serializers.PrimaryKeyRelatedField(required=True, queryset=Group.objects.all())
 
     def create(self, validated_data):
         return Student.objects.create(**validated_data)

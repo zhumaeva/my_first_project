@@ -17,6 +17,6 @@ def my_signal(sender, instance, created, **kwargs):
 
 @receiver([post_save], sender=Group )
 def my_signal(sender, instance, created, **kwargs):
-    counter = Group.objects.filter(group = instance)
-    res_student = counter.count
+    counter = Student.objects.filter(group = instance)
+    res_student = counter.count()
     print(res_student)

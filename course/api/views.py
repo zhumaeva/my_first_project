@@ -1,58 +1,191 @@
+import re
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
 from course.api.serializers import *
 from course.models import Branch, Student, Group
+from rest_framework import generics, mixins
+
+
+# class BranchListView(generics.ListCreateAPIView):
+#     queryset = Branch.objects.all()
+#     serializer_class = BranchModelSerializer
+#
+#
+# class BranchDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Branch.objects.all()
+#     serializer_class = BranchModelSerializer
+
+
+class BranchListView(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    generics.GenericAPIView):
+
+    queryset = Branch.objects.all()
+    serializer_class = BranchModelSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post( self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class BranchDetailView(mixins.DestroyModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.RetrieveModelMixin,
+                       generics.GenericAPIView):
+    queryset = Branch.objects.all()
+    serializer_class = BranchModelSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 class BranchAPIView(APIView):
 
     def get(self, request, format=None):
-        branches = Branch.objects.all()
-        serializer = BranchSerializer(branches, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        branches = Branch(Serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        serializer = BranchSerializer(data=request.data)
+        serializer = BranchModelSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class GroupListView(generics.ListCreateAPIView):
+#     queryset = Group.objects.all()
+#     serializer_class = GroupModelSerializer
+#
+#
+# class GroupDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Group.objects.all()
+#     serializer_class = GroupModelSerializer
+
+class GroupListView(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    generics.GenericAPIView):
+
+    queryset = Group.objects.all()
+    serializer_class = GroupModelSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post( self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class GroupDetailView(mixins.DestroyModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.RetrieveModelMixin,
+                       generics.GenericAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupModelSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 class GroupAPIView(APIView):
 
     def get(self, request, format=None):
         groups = Group.objects.all()
-        serializer = GroupSerializer(groups, many=True)
+        serializer = GroupModelSerializer(groups, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        serializer = GroupSerializer(data=request.data)
+        serializer = GroupModelSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+# class StudentListView(generics.ListCreateAPIView):
+#     queryset = Student.objects.all()
+#     serializer_class = StudentModelSerializer
+#
+#
+# class StudentDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Student.objects.all()
+#     serializer_class = StudentModelSerializer
+
+
+class StudentListView(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    generics.GenericAPIView):
+
+    queryset = Student.objects.all()
+    serializer_class = StudentModelSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post( self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class StudentDetailView(mixins.DestroyModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.RetrieveModelMixin,
+                       generics.GenericAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentModelSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
 class StudentAPIView(APIView):
     def get(self, request, format=None):
         students = Student.objects.all()
-        serializer = StudentSerializer(students, many=True)
+        serializer = StudentModelSerializer(students, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        serializer = StudentSerializer(data=request.data)
+        serializer = StudentModelSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
-    
+        
 class BranchDetailAPIView(APIView):
 
     def get_object(self, pk):
@@ -64,12 +197,12 @@ class BranchDetailAPIView(APIView):
 
     def get(self, request, pk, format=None):
         branch = self.get_object(pk)
-        serializer = BranchSerializer(branch)
+        serializer = BranchModelSerializer(branch)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         branch = self.get_object(pk)
-        serializer = BranchSerializer(instance=branch, data=request.data)
+        serializer = BranchModelSerializer(instance=branch, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
